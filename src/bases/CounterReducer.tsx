@@ -1,39 +1,79 @@
-import { useReducer, useState } from "react";
-
+import { useReducer } from 'react'
 
 interface CounterState {
-    counter: number;
+    counter : number;
     previous: number;
-    changes: number;
-}
-
-const INITIAL_STATE :CounterState = {
-  counter: 0,
-  previous: 0,
-  changes: 0
-}
-
-const counterReducer = () =>{
-  
-}
-
-export const CounterReducerComponent = ({ initialValue = 0 }: Props) => {
-
-  const [state, dispatch] = useReducer(first, INITIAL_STATE)
-  const [ counter, setCounter ] = useState(initialValue);
-
-  const handleClick = () =>{
-    setCounter( prev => prev + 1 )
-  }
-
-  return (
-    <>
-      <h1>Counter Reducer: { counter }</h1>
-      <button onClick={ handleClick }>
-        +1
-      </button>
-    </>
-  )
+    changes : number;
 }
 
 
+const INITIAL_STATE: CounterState = {
+    counter: 0,
+    previous: 0,
+    changes: 0
+}
+
+type CounterAction = 
+    | { type: 'increaseBy', payload: { value: number; } }
+    | { type: 'reset' };
+
+const counterReducer = ( state:CounterState, action:CounterAction ): CounterState => {
+
+    const { counter, changes } = state;
+
+    switch ( action.type ) {
+        case 'reset':
+            return {
+                changes: 0, 
+                counter: 0,
+                previous: 0,
+            }      
+            
+        case 'increaseBy':
+            return {
+                changes: changes + 1,
+                counter: counter + action.payload.value,
+                previous: counter
+            }
+    
+        default:
+            return state;
+    }
+}
+
+
+
+export const CounterReducerComponent = () => {
+
+    const [ counterState, dispatch] = useReducer( counterReducer, INITIAL_STATE );
+
+    const handleReset = () => {
+        dispatch({ type: 'reset' })
+    }
+
+    const increaseBy = ( value: number ) => {
+        dispatch({ type: 'increaseBy', payload: { value } });
+    }
+
+    return (
+        <>
+            <h1>Counter Reducer</h1>   
+            <pre>
+                { JSON.stringify( counterState, null, 2 ) }
+            </pre>
+
+            <button onClick={ () => increaseBy(1) }>
+                +1
+            </button>
+            <button onClick={ () => increaseBy(5) }>
+                +5
+            </button>
+            <button onClick={ () => increaseBy(10) }>
+                +10
+            </button>
+            <button onClick={ handleReset }>
+                Reset
+            </button>
+        </>
+    )
+}
