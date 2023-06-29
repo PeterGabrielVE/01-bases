@@ -13,7 +13,11 @@ const INITIAL_STATE :CounterState = {
   changes: 0
 }
 
-export const CounterReducer = ({ initialValue = 0 }: Props) => {
+const counterReducer = () =>{
+  
+}
+
+export const CounterReducerComponent = ({ initialValue = 0 }: Props) => {
 
   const [state, dispatch] = useReducer(first, INITIAL_STATE)
   const [ counter, setCounter ] = useState(initialValue);
